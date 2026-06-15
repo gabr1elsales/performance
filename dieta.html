@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dieta — Emagrecimento</title>
+
+<!-- ─── PWA / ÍCONE NA TELA INICIAL ─── -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Dieta">
+<meta name="application-name" content="Dieta">
+<meta name="theme-color" content="#f5f6fa">
+
+<!-- Ícone para iOS (Apple Touch Icon) -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23ffffff'/%3E%3Crect width='180' height='180' rx='40' fill='none' stroke='%23e5e7ef' stroke-width='2'/%3E%3Cg transform='translate(90,90)' stroke='%232a3fff' stroke-width='7' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M-20 30h40'/%3E%3Cpath d='M-10 30c22-10 34-28 16-56C-4-42-22-30-22-10c0 8 6 16 10 20'/%3E%3Cpath d='M-4-8C-8-2-12 8-12 30'/%3E%3C/g%3E%3C/svg%3E">
+
+<!-- Favicon SVG inline -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ffffff'/%3E%3Cg transform='translate(16,16)' stroke='%232a3fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M-4 7h8'/%3E%3Cpath d='M-2 7c5-2 7.5-6 3-13C-1-9-5-7-5-2c0 2 1.5 4 2.5 5'/%3E%3Cpath d='M-.8-1C-2 1-3 4-3 7'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inclusive+Sans:ital@0;1&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:          #f5f6fa;
+  --surface:     #ffffff;
+  --surface-2:   #f9fafd;
+  --surface-3:   #f0f2f8;
+  --border:      rgba(0,0,0,0.07);
+  --border-2:    rgba(0,0,0,0.11);
+  --border-hi:   rgba(0,21,255,0.22);
+  --blue:        #0015FF;
+  --blue-glow:   rgba(0,21,255,0.18);
+  --blue-text:   #2a3fff;
+  --green:       #16a34a;
+  --green-soft:  rgba(22,163,74,0.08);
+  --amber:       #d97706;
+  --amber-soft:  rgba(217,119,6,0.08);
+  --text:        #0a0c1a;
+  --text-2:      #2a2d40;
+  --text-3:      #565a72;
+  --text-4:      #8a8ea8;
+  --text-5:      #c0c3d6;
+  --grid-line:   rgba(0,0,0,0.025);
+  --glow-1:      rgba(0,21,255,0.05);
+  --glow-1b:     rgba(0,21,255,0.02);
+  --inset-hi:    rgba(255,255,255,0.9);
+  --font-display:'Inclusive Sans', system-ui, sans-serif;
+  --font-body:   'Inclusive Sans', -apple-system, sans-serif;
+  --font-mono:   'Sora', sans-serif;
+}
+
+html { background: var(--bg); scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ─── BG ─── */
+.bg-glow-1 {
+  position: fixed; top: -200px; left: 50%;
+  transform: translateX(-50%);
+  width: 800px; height: 800px;
+  background: radial-gradient(circle at 50% 35%, var(--glow-1) 0%, var(--glow-1b) 30%, transparent 65%);
+  z-index: 0; pointer-events: none; filter: blur(12px);
+}
+.bg-grid {
+  position: fixed; inset: 0;
+  background-image: linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+                    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at 50% 20%, rgba(0,0,0,0.6), transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 20%, rgba(0,0,0,0.6), transparent 70%);
+  z-index: 0; pointer-events: none;
+}
+
+/* ─── LAYOUT ─── */
+.page {
+  position: relative; z-index: 2;
+  width: 100%; max-width: 440px;
+  margin: 0 auto;
+  padding: env(safe-area-inset-top, 16px) 22px 40px;
+}
+
+/* ─── TOP BAR ─── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 0 0;
+  font-family: var(--font-mono);
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-4);
+}
+.topbar-left { display: flex; align-items: center; gap: 7px; }
+.pulse-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #16a34a;
+  animation: pulse 2.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(22,163,74,0.6); }
+  70%  { box-shadow: 0 0 0 8px rgba(22,163,74,0); }
+  100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+}
+
+/* ─── HERO ─── */
+.hero { padding: 36px 0 20px; text-align: center; }
+.hero-icon {
+  width: 68px; height: 68px; margin: 0 auto 18px;
+  background: var(--surface);
+  border: 1px solid var(--border-2); border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blue-text);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 1px 0 var(--inset-hi) inset;
+}
+.hero-icon svg { width: 30px; height: 30px; stroke-width: 1.5; }
+.hero-name { font-family: var(--font-display); font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); line-height: 1.05; }
+.hero-name em { font-style: normal; color: var(--blue-text); }
+.hero-role {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-4); margin-top: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.hero-role::before, .hero-role::after { content: ""; width: 18px; height: 1px; background: var(--border-2); }
+.hero-desc { font-size: 12.5px; line-height: 1.55; color: var(--text-3); margin-top: 14px; max-width: 310px; margin-left: auto; margin-right: auto; }
+
+/* ─── MACROS ─── */
+.macros {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  margin-top: 24px; padding: 14px 0;
+  border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.macro { text-align: center; padding: 4px 6px; position: relative; }
+.macro + .macro::before { content: ""; position: absolute; left: 0; top: 20%; height: 60%; width: 1px; background: var(--border); }
+.macro-num { font-family: var(--font-display); font-size: 19px; font-weight: 500; color: var(--text); letter-spacing: -0.02em; line-height: 1; }
+.macro-num em { font-style: normal; color: var(--blue); }
+.macro-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-4); margin-top: 5px; }
+
+/* ─── SECTION LABEL ─── */
+.section-label {
+  display: flex; align-items: center; gap: 10px;
+  margin: 34px 0 14px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-4);
+}
+.section-label svg { width: 13px; height: 13px; stroke-width: 2; flex-shrink: 0; }
+.section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(to right, var(--border-2), transparent); }
+
+/* ─── MEAL CARD ─── */
+.meal-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden; margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 1px 0 var(--inset-hi) inset;
+  /* sem onclick inline — JS cuida de tudo */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Header clicável */
+.meal-header {
+  display: flex; align-items: center;
+  padding: 16px 18px 14px; gap: 13px;
+  cursor: pointer;
+  /* área de toque grande */
+  min-height: 72px;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none;
+}
+.meal-header:active { background: var(--surface-3); }
+
+.meal-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  border: 1px solid var(--border); background: var(--surface-3); color: var(--text-3);
+  /* pointer-events none pra não interferir no clique do header */
+  pointer-events: none;
+}
+.meal-icon svg { width: 18px; height: 18px; stroke-width: 1.6; }
+.meal-info { flex: 1; min-width: 0; pointer-events: none; }
+.meal-time { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-4); margin-bottom: 2px; }
+.meal-name { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+.meal-kcal { font-family: var(--font-mono); font-size: 11px; color: var(--text-4); margin-top: 2px; }
+.meal-chevron {
+  width: 18px; height: 18px; color: var(--text-5); flex-shrink: 0; pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1), color 0.2s;
+}
+.meal-card.open .meal-chevron { transform: rotate(180deg); color: var(--text-3); }
+
+/* Body — toggle via classe */
+.meal-body { display: none; }
+.meal-card.open .meal-body { display: block; }
+
+.meal-body-inner { padding: 14px 18px 18px; border-top: 1px solid var(--border); }
+
+/* ─── FOOD OPTIONS ─── */
+.food-group { margin-bottom: 14px; }
+.food-group:last-child { margin-bottom: 0; }
+.food-group-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-4); margin-bottom: 8px; }
+.food-options { display: flex; flex-direction: column; gap: 6px; }
+
+/* Botão de opção — tag <button> real */
+.food-opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface-3);
+  border: 1.5px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px; color: var(--text-2);
+  font-family: inherit; text-align: left; width: 100%;
+  -webkit-tap-highlight-color: transparent;
+  /* sem transition para máxima resposta no mobile */
+}
+.food-opt:active { background: #e8ebf8; }
+.food-opt.sel { background: rgba(0,21,255,0.05); border-color: var(--blue); color: var(--text); }
+
+.food-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--text-5); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.food-opt.sel .food-dot { border-color: var(--blue); background: var(--blue); }
+.food-opt.sel .food-dot::after { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #fff; }
+
+.food-opt-text { flex: 1; pointer-events: none; }
+.food-opt-name { font-size: 13px; font-weight: 500; line-height: 1.3; }
+.food-opt-kcal { font-family: var(--font-mono); font-size: 10px; color: var(--text-4); margin-top: 1px; }
+
+.food-prot-tag {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.06em;
+  color: var(--green); background: var(--green-soft);
+  border: 1px solid rgba(22,163,74,0.18);
+  border-radius: 6px; padding: 2px 7px; white-space: nowrap;
+  pointer-events: none;
+}
+
+.food-or {
+  text-align: center; font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.18em;
+  color: var(--text-5); text-transform: uppercase; margin: 2px 0;
+}
+
+.food-note {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 10px 12px;
+  background: var(--amber-soft);
+  border: 1px solid rgba(217,119,6,0.15);
+  border-radius: 9px;
+  font-size: 11.5px; color: var(--text-3); line-height: 1.5; margin-top: 10px;
+}
+.food-note-icon { color: var(--amber); flex-shrink: 0; margin-top: 1px; }
+.food-note-icon svg { width: 13px; height: 13px; stroke-width: 2; }
+
+/* ─── TREINO DIVIDER ─── */
+.treino-divider {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 0; margin: 2px 0;
+}
+.treino-divider-line { flex: 1; height: 1px; background: var(--border-2); }
+.treino-divider-label {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-4);
+}
+.treino-divider-label svg { width: 12px; height: 12px; stroke-width: 2; }
+
+/* ─── RESUMO ─── */
+.daily-total {
+  background: var(--surface);
+  border: 1px solid var(--border-hi); border-radius: 16px; padding: 18px 20px;
+  box-shadow: 0 2px 16px -6px var(--blue-glow), 0 1px 0 var(--inset-hi) inset;
+}
+.daily-total-label {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--blue-text); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 6px;
+}
+.daily-total-label::before { content: ""; width: 5px; height: 5px; background: var(--blue); border-radius: 50%; box-shadow: 0 0 8px var(--blue-glow); }
+
+.daily-bars { display: flex; flex-direction: column; gap: 10px; }
+.macro-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.macro-bar-name { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+.macro-bar-val  { font-family: var(--font-mono); font-size: 10px; font-weight: 600; color: var(--text-2); }
+.macro-bar-track { height: 4px; background: var(--surface-3); border-radius: 10px; overflow: hidden; }
+.macro-bar-fill { height: 100%; border-radius: 10px; width: 0; transition: width 1.1s cubic-bezier(0.2,0.8,0.2,1); }
+.macro-bar-fill.cal  { background: linear-gradient(90deg, var(--blue), #6a7fff); }
+.macro-bar-fill.prot { background: linear-gradient(90deg, var(--green), #4ade80); }
+.macro-bar-fill.carb { background: linear-gradient(90deg, var(--amber), #fbbf24); }
+
+/* ─── FOOTER ─── */
+footer {
+  border-top: 1px solid var(--border); margin-top: 32px; padding: 20px 22px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+  max-width: 440px; margin-left: auto; margin-right: auto;
+}
+.footer-brand { display: flex; align-items: center; gap: 8px; }
+.footer-brand svg { width: 16px; height: 16px; stroke-width: 1.6; color: var(--text-4); }
+.footer-brand-name { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; color: var(--text-4); text-transform: uppercase; }
+.footer-right { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; color: var(--text-5); }
+</style>
+</head>
+<body>
+
+<div class="bg-glow-1"></div>
+<div class="bg-grid"></div>
+
+<div class="page">
+
+  <div class="topbar">
+    <div class="topbar-left"><div class="pulse-dot"></div><span>Plano ativo</span></div>
+    <span>97 kg · 1,79 m · 26 anos</span>
+  </div>
+
+  <div class="hero">
+    <div class="hero-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 20h10"/><path d="M10 20c5.5-2.5 8.5-7 4-14C10 2 5.5 5 5.5 10c0 2 1.5 4 2.5 5"/>
+        <path d="M10.9 12.9C10 14.5 9 17 9 20"/>
+      </svg>
+    </div>
+    <div class="hero-name">Dieta de <em>Emagrecimento</em></div>
+    <div class="hero-role">Objetivo</div>
+    <div class="hero-desc">Perder ~10 kg mantendo performance nos treinos. Déficit calórico com alta proteína.</div>
+  </div>
+
+  <div class="macros">
+    <div class="macro"><div class="macro-num">2100<em>–</em>2200</div><div class="macro-label">Kcal / dia</div></div>
+    <div class="macro"><div class="macro-num">~<em>180</em>g</div><div class="macro-label">Proteína</div></div>
+    <div class="macro"><div class="macro-num">~<em>200</em>g</div><div class="macro-label">Carboidrato</div></div>
+  </div>
+
+  <div class="section-label">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Refeições do dia
+  </div>
+
+  <!-- 1 CAFÉ -->
+  <div class="meal-card" id="card0">
+    <div class="meal-header" id="hdr0">
+      <div class="meal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div>
+      <div class="meal-info">
+        <div class="meal-time">7h – 8h</div>
+        <div class="meal-name">Café da manhã</div>
+        <div class="meal-kcal">~420–500 kcal</div>
+      </div>
+      <svg class="meal-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="meal-body">
+      <div class="meal-body-inner">
+        <div class="food-group">
+          <div class="food-group-label">Proteína</div>
+          <div class="food-options" data-group="c0g0">
+            <button class="food-opt sel" type="button">
+              <div class="food-dot"></div>
+              <div class="food-opt-text"><div class="food-opt-name">3 ovos mexidos / estrelados</div><div class="food-opt-kcal">~210 kcal · 18g prot</div></div>
+              <span class="food-prot-tag">+proteína</span>
+            </button>
+          </div>
+        </div>
+        <div class="food-group">
+          <div class="food-group-label">Carboidrato — escolha 1</div>
+          <div class="food-options" data-group="c0g1">
+            <button class="food-opt sel" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">1 pão francês</div><div class="food-opt-kcal">~140 kcal · 5g prot</div></div></button>
+            <div class="food-or">ou</div>
+            <button class="food-opt" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">2 fatias de pão integral</div><div class="food-opt-kcal">~130 kcal · 6g prot</div></div></button>
+            <div class="food-or">ou</div>
+            <button class="food-opt" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">Tapioca (70g)</div><div class="food-opt-kcal">~130 kcal · 1g prot</div></div></button>
+          </div>
+        </div>
+        <div class="food-group">
+          <div class="food-group-label">Opcional</div>
+          <div class="food-options" data-group="c0g2">
+            <button class="food-opt" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">Requeijão (1 colher de sopa)</div><div class="food-opt-kcal">~45 kcal · 1,5g prot</div></div></button>
+          </div>
+        </div>
+        <div class="food-note"><span class="food-note-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span><span>Café sem açúcar ou com adoçante — não conta nas calorias.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 ALMOÇO -->
+  <div class="meal-card" id="card1">
+    <div class="meal-header" id="hdr1">
+      <div class="meal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></div>
+      <div class="meal-info">
+        <div class="meal-time">12h – 13h</div>
+        <div class="meal-name">Almoço</div>
+        <div class="meal-kcal">~550–580 kcal</div>
+      </div>
+      <svg class="meal-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="meal-body">
+      <div class="meal-body-inner">
+        <div class="food-group">
+          <div class="food-group-label">Marmita padrão</div>
+          <div class="food-options" data-group="c1g0">
+            <button class="food-opt sel" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">150g arroz + 250g frango desfiado</div><div class="food-opt-kcal">~555 kcal · 62g prot · 53g carb</div></div><span class="food-prot-tag">+proteína</span></button>
+          </div>
+        </div>
+        <div class="food-note"><span class="food-note-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span><span>Se possível, adicione uma salada simples — quase zero caloria e aumenta a saciedade.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 PRÉ-TREINO -->
+  <div class="meal-card" id="card2">
+    <div class="meal-header" id="hdr2">
+      <div class="meal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <div class="meal-info">
+        <div class="meal-time">16h30 – 17h30</div>
+        <div class="meal-name">Pré-treino</div>
+        <div class="meal-kcal">~250–310 kcal</div>
+      </div>
+      <svg class="meal-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="meal-body">
+      <div class="meal-body-inner">
+        <div class="food-group">
+          <div class="food-group-label">Base — sempre</div>
+          <div class="food-options" data-group="c2g0">
+            <button class="food-opt sel" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">250g iogurte natural caseiro</div><div class="food-opt-kcal">~150 kcal · 10g prot</div></div><span class="food-prot-tag">+proteína</span></button>
+          </div>
+        </div>
+        <div class="food-group">
+          <div class="food-group-label">Fruta — escolha 1</div>
+          <div class="food-options" data-group="c2g1">
+            <button class="food-opt sel" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">1 maçã</div><div class="food-opt-kcal">~80 kcal · 0,5g prot</div></div></button>
+            <div class="food-or">ou</div>
+            <button class="food-opt" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">250g melão</div><div class="food-opt-kcal">~65 kcal · 0,8g prot</div></div></button>
+            <div class="food-or">ou</div>
+            <button class="food-opt" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">200g abacaxi</div><div class="food-opt-kcal">~80 kcal · 0,9g prot</div></div></button>
+          </div>
+        </div>
+        <div class="food-group">
+          <div class="food-group-label">Opcional — mais energia</div>
+          <div class="food-options" data-group="c2g2">
+            <button class="food-opt" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">30g de aveia</div><div class="food-opt-kcal">+112 kcal · 3,6g prot</div></div></button>
+          </div>
+        </div>
+        <div class="food-note"><span class="food-note-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span><span>Comer 30–60 min antes do treino. Carbo da fruta + iogurte garante energia sem pesar.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TREINO DIVIDER -->
+  <div class="treino-divider">
+    <div class="treino-divider-line"></div>
+    <div class="treino-divider-label">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5h11"/><path d="M6.5 17.5h11"/><path d="M3 12h18"/><path d="M5.5 6.5v-2a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v2"/><path d="M5.5 17.5v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2"/><path d="M15.5 6.5v-2a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v2"/><path d="M15.5 17.5v2a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-2"/></svg>
+      Treino · 18h – 19h
+    </div>
+    <div class="treino-divider-line"></div>
+  </div>
+
+  <!-- 4 JANTAR -->
+  <div class="meal-card" id="card3">
+    <div class="meal-header" id="hdr3">
+      <div class="meal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></div>
+      <div class="meal-info">
+        <div class="meal-time">19h30 – 20h</div>
+        <div class="meal-name">Jantar — pós-treino</div>
+        <div class="meal-kcal">~570–600 kcal</div>
+      </div>
+      <svg class="meal-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="meal-body">
+      <div class="meal-body-inner">
+        <div class="food-group">
+          <div class="food-group-label">Marmita padrão</div>
+          <div class="food-options" data-group="c3g0">
+            <button class="food-opt sel" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">150g macarrão + 250g frango desfiado</div><div class="food-opt-kcal">~580 kcal · 63g prot · 58g carb</div></div><span class="food-prot-tag">+proteína</span></button>
+          </div>
+        </div>
+        <div class="food-note"><span class="food-note-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span><span>Uma colher de azeite + sal torna o prato sustentável sem comprometer a dieta.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 CEIA -->
+  <div class="meal-card" id="card4">
+    <div class="meal-header" id="hdr4">
+      <div class="meal-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></div>
+      <div class="meal-info">
+        <div class="meal-time">21h30 – 22h · opcional</div>
+        <div class="meal-name">Ceia</div>
+        <div class="meal-kcal">~80–150 kcal</div>
+      </div>
+      <svg class="meal-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="meal-body">
+      <div class="meal-body-inner">
+        <div class="food-group">
+          <div class="food-group-label">Só se sentir fome — escolha 1</div>
+          <div class="food-options" data-group="c4g0">
+            <button class="food-opt sel" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">150–200g melão ou abacaxi</div><div class="food-opt-kcal">~60–80 kcal · 0,8g prot</div></div></button>
+            <div class="food-or">ou</div>
+            <button class="food-opt" type="button"><div class="food-dot"></div><div class="food-opt-text"><div class="food-opt-name">Porção extra de iogurte natural</div><div class="food-opt-kcal">~120–150 kcal · 8g prot</div></div><span class="food-prot-tag">+proteína</span></button>
+          </div>
+        </div>
+        <div class="food-note"><span class="food-note-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span><span>Se não tiver fome, não precisa comer. A ceia existe só para evitar acordar com fome.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESUMO -->
+  <div class="section-label" style="margin-top:34px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Resumo do dia
+  </div>
+
+  <div class="daily-total" id="resumo">
+    <div class="daily-total-label">Total estimado</div>
+    <div class="daily-bars">
+      <div class="macro-bar">
+        <div class="macro-bar-header"><span class="macro-bar-name">Calorias</span><span class="macro-bar-val">~2.100–2.200 kcal</span></div>
+        <div class="macro-bar-track"><div class="macro-bar-fill cal" id="barCal"></div></div>
+      </div>
+      <div class="macro-bar">
+        <div class="macro-bar-header"><span class="macro-bar-name">Proteína</span><span class="macro-bar-val">~180g</span></div>
+        <div class="macro-bar-track"><div class="macro-bar-fill prot" id="barProt"></div></div>
+      </div>
+      <div class="macro-bar">
+        <div class="macro-bar-header"><span class="macro-bar-name">Carboidrato</span><span class="macro-bar-val">~195g</span></div>
+        <div class="macro-bar-track"><div class="macro-bar-fill carb" id="barCarb"></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V12"/><path d="M5 12H2a10 10 0 0 0 20 0h-3"/><path d="M12 12C12 7 8 3 5 2c0 4 2.5 7 7 10"/><path d="M12 12c0-5 4-9 7-10 0 4-2.5 7-7 10"/></svg>
+    <span class="footer-brand-name">Plano Nutricional</span>
+  </div>
+  <div class="footer-right">Gabriel · 2026</div>
+</footer>
+
+<script>
+// ─── UTILITÁRIO: distingue TAP de SCROLL ───
+// Só executa a ação se o dedo não se moveu mais de 10px
+function makeTapHandler(el, onTap) {
+  var startX, startY, moved;
+
+  el.addEventListener('touchstart', function(e) {
+    var t = e.touches[0];
+    startX = t.clientX;
+    startY = t.clientY;
+    moved = false;
+  }, { passive: true });
+
+  el.addEventListener('touchmove', function(e) {
+    var t = e.touches[0];
+    var dx = Math.abs(t.clientX - startX);
+    var dy = Math.abs(t.clientY - startY);
+    if (dx > 10 || dy > 10) moved = true;
+  }, { passive: true });
+
+  el.addEventListener('touchend', function(e) {
+    if (!moved) {
+      e.preventDefault();
+      onTap(e);
+    }
+  }, { passive: false });
+
+  // Fallback para desktop / webviews sem touch
+  el.addEventListener('click', function(e) {
+    onTap(e);
+  });
+}
+
+// ─── TOGGLE DOS CARDS ───
+var headers = document.querySelectorAll('.meal-header');
+for (var i = 0; i < headers.length; i++) {
+  (function(hdr) {
+    makeTapHandler(hdr, function(e) {
+      var card = hdr.parentElement;
+      card.classList.toggle('open');
+    });
+  })(headers[i]);
+}
+
+// ─── SELEÇÃO DE OPÇÕES ───
+var opts = document.querySelectorAll('.food-opt');
+for (var j = 0; j < opts.length; j++) {
+  (function(btn) {
+    makeTapHandler(btn, function(e) {
+      e.stopPropagation();
+      var group = btn.closest('[data-group]') || btn.parentElement;
+      var siblings = group.querySelectorAll('.food-opt');
+      for (var k = 0; k < siblings.length; k++) {
+        siblings[k].classList.remove('sel');
+      }
+      btn.classList.add('sel');
+    });
+  })(opts[j]);
+}
+
+// ─── BARRAS ANIMADAS ───
+function animateBars() {
+  document.getElementById('barCal').style.width  = '88%';
+  document.getElementById('barProt').style.width = '92%';
+  document.getElementById('barCarb').style.width = '78%';
+}
+
+// Dispara as barras após 400ms (garante que o elemento está visível)
+if (window.IntersectionObserver) {
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) { animateBars(); obs.disconnect(); }
+    });
+  }, { threshold: 0.1 });
+  obs.observe(document.getElementById('resumo'));
+} else {
+  // Fallback para webviews sem IntersectionObserver
+  setTimeout(animateBars, 500);
+}
+</script>
+
+</body>
+</html>
